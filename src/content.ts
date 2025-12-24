@@ -1,6 +1,5 @@
 /// <reference types="chrome" />
-
-const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+const browserAPIContent = typeof browser !== 'undefined' ? browser : chrome;
 
 type AnimeSamaHistory = Record<string, any>;
 
@@ -15,7 +14,7 @@ enum Path {
     style_popup = "common/css/popup-sync.css"
 }
 
-browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
+browserAPIContent.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'IMPORT_BACKUP') {
         const data: AnimeSamaHistory = message.data;
         Object.entries(data).forEach(([key, value]) => {
@@ -31,7 +30,7 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     console.log('🔍 === VÉRIFICATION DU STORAGE DE L\'EXTENSION ===');
     try {
-        const allStorage = await browserAPI.storage.local.get(null);
+        const allStorage = await browserAPIContent.storage.local.get(null);
         console.log('📦 Contenu complet du storage:', allStorage);
         console.log('📊 Nombre de clés totales:', Object.keys(allStorage).length);
     } catch (error) {
@@ -63,7 +62,7 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     };
 
     async function getExtensionLocalStorage(): Promise<Record<string, AnimeBackup | undefined>> {
-        return await browserAPI.storage.local.get(null) as Record<string, AnimeBackup | undefined>;
+        return await browserAPIContent.storage.local.get(null) as Record<string, AnimeBackup | undefined>;
     }
 
     // === SERVICE 2 : SAUVEGARDE ===
@@ -74,7 +73,7 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
             data,
             timestamp: Date.now()
         };
-        await browserAPI.storage.local.set({ [storageKey]: backup });
+        await browserAPIContent.storage.local.set({ [storageKey]: backup });
         console.log('💾 SAUVEGARDÉ:', Object.keys(data).length, 'clés');
     };
 
@@ -83,13 +82,13 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // Injecter CSS
         const css: HTMLLinkElement = document.createElement('link');
         css.rel = 'stylesheet';
-        css.href = browserAPI.runtime.getURL(Path.style_popup);
+        css.href = browserAPIContent.runtime.getURL(Path.style_popup);
         document.head.appendChild(css);
 
         // Injecter HTML popup
         const popup: HTMLDivElement = document.createElement('div');
 
-        const response = await fetch(browserAPI.runtime.getURL(Path.popup_sync));
+        const response = await fetch(browserAPIContent.runtime.getURL(Path.popup_sync));
         popup.innerHTML = await response.text();
         document.body.appendChild(popup);
 
@@ -130,7 +129,7 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
         };
 
         (popup.querySelector('#cancel-btn') as HTMLElement).onclick = () => {
-            browserAPI.storage.local.set({
+            browserAPIContent.storage.local.set({
                 [`alreadyAsked_${hostname}`]: true
             });
             popup.remove();
