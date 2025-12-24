@@ -1,14 +1,19 @@
 {
-  "name": "${PROJECT_NAME}",
+  "name": "anime_sama_backup",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "dev": "nodemon"
   },
-  "dependencies": {},
   "devDependencies": {
+    "@types/chrome": "^0.1.32",
+    "@types/firefox-webext-browser": "^143.0.0",
     "typescript": "^5.5.3"
   },
-  "private": true
+  "private": true,
+  "dependencies": {
+    "nodemon": "^3.1.11"
+  }
 }
