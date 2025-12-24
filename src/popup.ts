@@ -1,14 +1,33 @@
-const browserAPI = typeof browser !== 'undefined' ? browser : chrome;
+/// <reference types="chrome" />
 
-let selectedBackup = null;
+const browserAPIpopup = typeof browser !== 'undefined' ? browser : chrome;
+
+
+let selectedBackup: AnimeBackup | null = null;
+
+enum Status {
+    success = 'success',
+    info = 'info',
+    error = 'error',
+}
+
+async function getCurrentTabName(): Promise<string> {
+    const [tab] = await browserAPIpopup.tabs.query({
+        active: true,
+        currentWindow: true
+    });
+    return tab?.title || 'Onglet inconnu'
+}
 
 // Afficher un message de statut
-function showStatus(message, type = 'info') {
-    const statusEl = document.getElementById('status');
+function showStatus(message: string, type: Status = Status.info): void {
+    const statusEl = document.getElementById('status') as HTMLElement;
+    if (!statusEl) return;
+
     statusEl.textContent = message;
     statusEl.className = `status ${type}`;
 
-    if (type !== 'error') {
+    if (type !== Status.error) {
         setTimeout(() => {
             statusEl.style.display = 'none';
         }, 3000);
@@ -16,46 +35,49 @@ function showStatus(message, type = 'info') {
 }
 
 // Charger et afficher les sauvegardes
-async function loadBackups() {
-    const backupList = document.getElementById('backup-list');
-    const importBtn = document.getElementById('import-btn');
+async function loadBackups(): Promise<void> {
+    const backupList = document.getElementById('backup-list') as HTMLElement;
+    const importBtn = document.getElementById('force-import-to-website-btn') as HTMLButtonElement;
+    const exportBtn = document.getElementById('export-btn') as HTMLButtonElement;
+    const webSiteName = document.querySelector('strong') as HTMLElement;
 
     try {
-        const storage = await browserAPI.storage.local.get(null);
-        const backups = Object.keys(storage)
-            .filter(key => key.startsWith('anime-sama'))
-            .map(key => storage[key])
-            .filter(backup => backup && backup.data);
+        const storage = await browserAPIpopup.storage.local.get(null) as Record<string, AnimeBackup | undefined>;
+        const backups: AnimeBackup[] = Object.keys(storage)
+            .map(key => storage[key]!)
+            .filter((backup): backup is AnimeBackup => !!backup && !!backup.data);
 
         if (backups.length === 0) {
             backupList.innerHTML = '<div class="empty-state">📭 Aucune sauvegarde disponible</div>';
             importBtn.disabled = true;
+            exportBtn.disabled = true;
             return;
         }
 
         backupList.innerHTML = '';
+        webSiteName.innerHTML = await getCurrentTabName();
 
-        backups.forEach(backup => {
-            const item = document.createElement('div');
+        backups.forEach((backup: AnimeBackup) => {
+            const item: HTMLDivElement = document.createElement('div');
             item.className = 'backup-item';
 
-            const hostname = document.createElement('div');
+            const hostname: HTMLDivElement = document.createElement('div');
             hostname.className = 'backup-hostname';
             hostname.textContent = `📺 ${backup.hostname}`;
 
-            const info = document.createElement('div');
+            const info: HTMLDivElement = document.createElement('div');
             info.className = 'backup-info';
-            const date = new Date(backup.timestamp).toLocaleString('fr-FR');
-            const nbKeys = Object.keys(backup.data).length;
+            const date: string = new Date(backup.timestamp).toLocaleString('fr-FR');
+            const nbKeys: number = Object.keys(backup.data).length;
             info.textContent = `${nbKeys} entrées • ${date}`;
 
             item.appendChild(hostname);
             item.appendChild(info);
 
             // Gestion de la sélection
-            item.onclick = () => {
-                document.querySelectorAll('.backup-item').forEach(el => {
-                    el.classList.remove('selected');
+            item.onclick = (): void => {
+                document.querySelectorAll('.backup-item').forEach((el: Element) => {
+                    (el as HTMLElement).classList.remove('selected');
                 });
                 item.classList.add('selected');
                 selectedBackup = backup;
@@ -65,121 +87,177 @@ async function loadBackups() {
             backupList.appendChild(item);
         });
 
-    } catch (error) {
+    } catch (error: unknown) {
         console.error('Erreur chargement backups:', error);
-        showStatus('❌ Erreur lors du chargement', 'error');
-    }
-}
-
-// Importer vers l'onglet actuel
-async function importToCurrentTab() {
-    if (!selectedBackup) {
-        showStatus('⚠️ Sélectionnez d\'abord une sauvegarde', 'error');
-        return;
-    }
-
-    try {
-        // Récupérer l'onglet actif
-        const tabs = await browserAPI.tabs.query({ active: true, currentWindow: true });
-        const currentTab = tabs[0];
-
-        if (!currentTab || !currentTab.id) {
-            showStatus('❌ Impossible de détecter l\'onglet actuel', 'error');
-            return;
-        }
-
-        // Vérifier si c'est un site anime-sama
-        const url = currentTab.url || '';
-        if (!url.includes('anime-sama')) {
-            const confirm = window.confirm(
-                `⚠️ L'onglet actuel n'est pas un site anime-sama.\n\n` +
-                `URL: ${url}\n\n` +
-                `Voulez-vous quand même forcer l'import ?`
-            );
-
-            if (!confirm) {
-                showStatus('❌ Import annulé', 'info');
-                return;
-            }
-        }
-
-        showStatus('⏳ Import en cours...', 'info');
-
-        // Injecter le script d'import
-        await browserAPI.scripting.executeScript({
-            target: { tabId: currentTab.id },
-            func: (backupData) => {
-                let successCount = 0;
-                let errorCount = 0;
-
-                Object.entries(backupData).forEach(([key, value]) => {
-                    try {
-                        const valueToStore = typeof value === 'object'
-                            ? JSON.stringify(value)
-                            : String(value);
-
-                        localStorage.setItem(key, valueToStore);
-                        successCount++;
-                    } catch (error) {
-                        console.error(`Erreur import de ${key}:`, error);
-                        errorCount++;
-                    }
-                });
-
-                return { successCount, errorCount };
-            },
-            args: [selectedBackup.data]
-        });
-
-        showStatus('✅ Import réussi ! Rechargez la page.', 'success');
-
-        // Proposer de recharger la page
-        setTimeout(() => {
-            if (window.confirm('🔄 Voulez-vous recharger la page maintenant ?')) {
-                browserAPI.tabs.reload(currentTab.id);
-                window.close();
-            }
-        }, 1000);
-
-    } catch (error) {
-        console.error('Erreur import:', error);
-        showStatus(`❌ Erreur: ${error.message}`, 'error');
+        showStatus('❌ Erreur lors du chargement', Status.error);
     }
 }
 
 // Supprimer toutes les sauvegardes
-async function clearAllBackups() {
-    const confirm = window.confirm(
+async function clearAllBackups(): Promise<void> {
+    const confirm: boolean = window.confirm(
         '⚠️ ATTENTION !\n\n' +
         'Voulez-vous vraiment supprimer TOUTES les sauvegardes ?\n\n' +
-        'Cette action est irréversible.'
+        'Cette action est irréversible.\n\n' +
+        'Les données seront re-récupérée depuis anime-sama automatiquement lors d\'un rechargement de la page'
     );
 
     if (!confirm) return;
 
     try {
-        const storage = await browserAPI.storage.local.get(null);
-        const backupKeys = Object.keys(storage).filter(key => key.startsWith('anime-sama'));
+        const storage = await browserAPIpopup.storage.local.get(null) as Record<string, AnimeBackup | undefined>;
+        const backupKeys: string[] = Object.keys(storage)
 
         for (const key of backupKeys) {
-            await browserAPI.storage.local.remove(key);
+            await browserAPIpopup.storage.local.remove(key);
         }
 
-        showStatus(`✅ ${backupKeys.length} sauvegarde(s) supprimée(s)`, 'success');
+        showStatus(`✅ ${backupKeys.length} sauvegarde(s) supprimée(s)`, Status.success);
 
         // Recharger la liste
         selectedBackup = null;
         await loadBackups();
 
-    } catch (error) {
+    } catch (error: unknown) {
         console.error('Erreur suppression:', error);
-        showStatus('❌ Erreur lors de la suppression', 'error');
+        showStatus('❌ Erreur lors de la suppression', Status.error);
     }
 }
 
-// Event listeners
-document.getElementById('force-import-to-website-btn').addEventListener('click', importToCurrentTab);
-document.getElementById('clear-btn').addEventListener('click', clearAllBackups);
+async function autoImportToSelectedWebsiteTab(): Promise<void> {
+    if (!selectedBackup) {
+        showStatus('⚠️ Sélectionnez d\'abord une sauvegarde', Status.error);
+        return;
+    }
 
-// Charger les backups au démarrage
-loadBackups();
+    try {
+        /*// Chercher onglet anime-sama ouvert
+        const animeSamaTabs = await browserAPIpopup.tabs.query({
+            // url: '*://*anime-sama*/   // *'
+        /*});
+
+        if (animeSamaTabs.length > 0) {
+            const tab = animeSamaTabs[0];
+            await injectBackupToTab(tab.id!, selectedBackup.data);
+            showStatus(`✅ Importé sur ${tab.title} (${tab.url})`, Status.success);
+            return;
+        }*/
+
+        // Fallback : onglet actif
+        const tabs = await browserAPIpopup.tabs.query({ active: true, currentWindow: true });
+        const currentTab = tabs[0];
+        if (currentTab?.id) {
+            await injectBackupToTab(currentTab.id, selectedBackup.data);
+            showStatus('✅ Importé sur onglet actif', Status.success);
+            await browserAPIpopup.tabs.reload(currentTab.id)
+        }
+    } catch (error: unknown) {
+        showStatus(`❌ Erreur: ${(error as Error).message}`, Status.error);
+    }
+}
+
+async function injectBackupToTab(tabId: number, data: AnimeSamaHistory): Promise<void> {
+    const response = await browserAPIpopup.tabs.sendMessage(tabId, {
+        action: 'IMPORT_BACKUP',
+        data
+    });
+    console.log('✅ Import via message:', response);
+}
+
+// EXPORT JSON
+async function exportBackups(): Promise<void> {
+    try {
+        const storage = await browserAPIpopup.storage.local.get(null);
+        const backups: AnimeBackup[] = Object.keys(storage)
+            .filter(key => key.startsWith('anime-sama'))
+            .map(key => storage[key] as AnimeBackup);
+
+        const json = JSON.stringify(backups, null, 2);
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `anime-sama-backups-${Date.now()}.json`;
+        a.click();
+
+        URL.revokeObjectURL(url);
+        showStatus('✅ Export terminé !', Status.success);
+    } catch (error: unknown) {
+        showStatus('❌ Erreur export', Status.error);
+    }
+}
+
+// IMPORT JSON
+async function importBackups(): Promise<void> {
+    showStatus("not implemented", Status.error);
+    return
+
+    const fileInput = document.createElement('input') as HTMLInputElement;
+    fileInput.type = 'file';
+    fileInput.accept = '.json,application/json';
+
+    fileInput.onchange = async (e: Event): Promise<void> => {
+        console.log("✅ onchange déclenché !");
+
+        const file = (e.target as HTMLInputElement).files?.[0];
+        if (!file) {
+            showStatus('❌ Aucun fichier sélectionné', Status.error);
+            return;
+        }
+
+        try {
+            showStatus('⏳ Lecture du fichier...', Status.info);
+            console.log("ok 1");
+
+            const text = await file.text();
+            const backups: AnimeBackup[] = JSON.parse(text);
+            console.log("ok 2", backups.length, "backups");
+
+            // Validation
+            if (!Array.isArray(backups)) {
+                throw new Error('Format JSON invalide : doit être un tableau');
+            }
+            console.log("ok");
+            if (backups.length === 0) {
+                throw new Error('Aucune sauvegarde dans le fichier');
+            }
+            console.log("ok");
+            // Import
+            for (const backup of backups) {
+                if (!backup.hostname || !backup.data || !backup.timestamp) {
+                    console.warn('Sauvegarde invalide ignorée:', backup);
+                    continue;
+                }
+
+                const key = `${backup.hostname}`;
+                await browserAPIpopup.storage.local.set({ [key]: backup });
+            }
+            console.log("ok");
+            const importedCount = backups.filter(b => b.hostname && b.data).length;
+            showStatus(`✅ ${importedCount}/${backups.length} sauvegarde(s) importée(s)`, Status.success);
+            loadBackups();
+            console.log("ok");
+        } catch (error: unknown) {
+            console.error('Erreur import:', error);
+            showStatus(
+                `❌ Erreur: ${error instanceof Error ? error.message : 'Fichier invalide'}`,
+                Status.error
+            );
+        } finally {
+            fileInput.remove();
+        }
+    };
+    document.body.appendChild(fileInput);
+    fileInput.click()
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    (document.getElementById('force-import-to-website-btn') as HTMLElement)?.addEventListener('click', autoImportToSelectedWebsiteTab);
+    (document.getElementById('export-btn') as HTMLElement)?.addEventListener('click', exportBackups);
+    (document.getElementById('import-btn') as HTMLElement)?.addEventListener('click', importBackups);
+    (document.getElementById('clear-btn') as HTMLElement)?.addEventListener('click', clearAllBackups);
+
+    loadBackups();
+});

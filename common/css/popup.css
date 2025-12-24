@@ -1,0 +1,155 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    width: 450px;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+h2 {
+    margin-bottom: 15px;
+    font-size: 20px;
+    text-align: center;
+}
+
+.section {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+}
+
+.section h3 {
+    font-size: 14px;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+#backup-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.backup-item {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.backup-item:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.backup-item.selected {
+    background: rgba(76, 175, 80, 0.5);
+    border: 2px solid #4CAF50;
+}
+
+.backup-hostname {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+
+.backup-info {
+    font-size: 11px;
+    opacity: 0.8;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 8px;
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+#import-btn {
+    background: #4CAF50;
+    color: white;
+}
+
+.up-button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+#clear-btn {
+    background: #f44336;
+    color: white;
+    font-size: 12px;
+    padding: 8px;
+}
+
+#clear-btn:hover {
+    background: #da190b;
+}
+
+.status {
+    text-align: center;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+    font-size: 12px;
+    display: none;
+}
+
+.status.success {
+    background: rgba(76, 175, 80, 0.3);
+    display: block;
+}
+
+.status.error {
+    background: rgba(244, 67, 54, 0.3);
+    display: block;
+}
+
+.status.info {
+    background: rgba(33, 150, 243, 0.3);
+    display: block;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 30px;
+    opacity: 0.7;
+    font-size: 14px;
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}

@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Anime-sama Sync</title>
+    <link rel="stylesheet" href="../css/popup.css">
+</head>
+<body>
+<h2>🔄 Anime-sama Sync</h2>
+
+<div class="section">
+    <h3>📦 Sauvegardes disponibles</h3>
+    <div id="backup-list"></div>
+    <button id="force-import-to-website-btn" class="up-button" disabled>🚀 Importer vos données vers l'onglet actuel <strong>Undefined</strong></button>
+</div>
+
+<div class="section">
+    <h3>🗑️ Gestion</h3>
+    <button id="export-btn" class="up-button">Exporter vos données</button>
+    <button id="import-btn" class="up-button">Importer vos données</button>
+    <button id="clear-btn" class="up-button">Supprimer toutes vos données</button>
+</div>
+
+<div id="status" class="status"></div>
+
+<script src="../../dist/popup.js"></script>
+</body>
+</html>
