@@ -51,7 +51,7 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log('🎯 Anime-sama détecté:', hostname);
 
     // === SERVICE 1 : LECTURE ===
-    const readAllLocalStorage = (): AnimeSamaHistory => {
+    const readWebsiteLocalStorage = (): AnimeSamaHistory => {
         const data: AnimeSamaHistory = {};
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -61,6 +61,10 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
         return data;
     };
+
+    async function getExtensionLocalStorage(): Promise<Record<string, AnimeBackup | undefined>> {
+        return await browserAPI.storage.local.get(null) as Record<string, AnimeBackup | undefined>;
+    }
 
     // === SERVICE 2 : SAUVEGARDE ===
     const saveToExtension = async (data: AnimeSamaHistory): Promise<void> => {
@@ -95,7 +99,7 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
 
         // Récupérer données depuis extension
-        const stored = await browserAPI.storage.local.get(null) as Record<string, AnimeBackup | undefined>;
+        const stored = await getExtensionLocalStorage();
         console.log(stored);
         const availableBackups: AnimeBackup[] = Object.keys(stored)
             .filter(key => key.startsWith('anime-sama'))
@@ -131,7 +135,8 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     };
 
     // === LOGIQUE PRINCIPALE ===
-    const currentData: AnimeSamaHistory = readAllLocalStorage();
+    const currentData: AnimeSamaHistory = readWebsiteLocalStorage();
+    const extensionData = await getExtensionLocalStorage()
 
     if (Object.keys(currentData).length > 0) {
         // CAS 1 : Données présentes → SAUVEGARDER
@@ -139,6 +144,8 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     } else {
         // CAS 2 : VIDE → POPUP
         console.log('📭 LocalStorage vide → Popup sync');
-        await showSyncPopup();
+        if(Object.keys(extensionData).length > 0 ) {
+            await showSyncPopup();
+        }
     }
 })();
