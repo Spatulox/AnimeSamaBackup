@@ -2,6 +2,8 @@
 Synchronise vos données locales (historique, favoris, progression) entre tous les miroirs Anime-Sama (.eu, .si, .fr, etc.)
 Plus besoin de refaire tous vos favoris lors d'un changement de domaine (.org / .eu) !
 
+En cas de bug, ouvrer un [Ticket](https://github.com/Spatulox/AnimeSamaBackup/issues/new)
+
 🚨 DISCLAIMER IMPORTANT
 
     ⚠️ CETTE EXTENSION N'EST PAS AFFILIÉE À ANIME-SAMA
@@ -9,8 +11,6 @@ Plus besoin de refaire tous vos favoris lors d'un changement de domaine (.org / 
         Aucun lien officiel avec les sites anime-sama.*
 
         L'auteur ne peut être tenu responsable des blocages, suppressions ou problèmes liés aux sites
-
-        En cas de bug, ouvrer un [Ticket](https://github.com/Spatulox/AnimeSamaBackup/issues/new)
 
 ✨ Fonctionnalités
 
