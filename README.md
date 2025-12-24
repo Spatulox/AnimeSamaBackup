@@ -1,8 +1,8 @@
-# AnimeSamaBackup
+# AnimeSamaBackup WIP
 Synchronise vos données locales (historique, favoris, progression) entre tous les miroirs Anime-Sama (.eu, .si, .fr, etc.)
 Plus besoin de refaire tous vos favoris lors d'un changement de domaine (.org / .eu) !
 
-En cas de bug, ouvrer un [Ticket](https://github.com/Spatulox/AnimeSamaBackup/issues/new)
+En cas de bug, ouvrez un [Ticket](https://github.com/Spatulox/AnimeSamaBackup/issues/new)
 
 🚨 DISCLAIMER IMPORTANT
 
@@ -14,13 +14,11 @@ En cas de bug, ouvrer un [Ticket](https://github.com/Spatulox/AnimeSamaBackup/is
 
 ✨ Fonctionnalités
 
-    🔄 Sync bidirectionnelle : anime-sama.eu ↔ .si ↔ .fr ↔ etc.
+    🔄 Sync bidirectionnelle : anime-sama.eu ↔ .si ↔ .fr ↔ org ↔ etc.
 
     💾 Backup automatique localement
 
-    📱 Popup de gestion : liste, import/export JSON, clear
-
-    🎯 Auto-détection onglet Anime-Sama pour import
+    📱 Popup de gestion : liste, import/export JSON, suppression
 
     📤 Export/Import JSON complet
 
