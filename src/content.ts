@@ -130,6 +130,9 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
         };
 
         (popup.querySelector('#cancel-btn') as HTMLElement).onclick = () => {
+            browserAPI.storage.local.set({
+                [`alreadyAsked_${hostname}`]: true
+            });
             popup.remove();
         };
     };
@@ -139,13 +142,25 @@ browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const extensionData = await getExtensionLocalStorage()
 
     if (Object.keys(currentData).length > 0) {
-        // CAS 1 : Données présentes → SAUVEGARDER
+        // Data on website => Saving it inside the extension
         await saveToExtension(currentData);
     } else {
-        // CAS 2 : VIDE → POPUP
-        console.log('📭 LocalStorage vide → Popup sync');
-        if(Object.keys(extensionData).length > 0 ) {
-            await showSyncPopup();
+        // No Data in website, loading from extension
+        // Check if the popup as already been showed, and declined by the user
+
+        // If data in extension
+        if(Object.keys(extensionData).length > 0) {
+            console.log(extensionData)
+
+
+            const key = `alreadyAsked_${hostname}`;
+            const result = await browser.storage.local.get(key);
+
+            if (result[key] !== true) {
+                await showSyncPopup();
+                await browser.storage.local.set({ [key]: true });
+            }
+
         }
     }
 })();

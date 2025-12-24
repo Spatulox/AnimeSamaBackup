@@ -105,14 +105,8 @@ async function clearAllBackups(): Promise<void> {
     if (!confirm) return;
 
     try {
-        const storage = await browserAPIpopup.storage.local.get(null) as Record<string, AnimeBackup | undefined>;
-        const backupKeys: string[] = Object.keys(storage)
-
-        for (const key of backupKeys) {
-            await browserAPIpopup.storage.local.remove(key);
-        }
-
-        showStatus(`✅ ${backupKeys.length} sauvegarde(s) supprimée(s)`, Status.success);
+        await browserAPIpopup.storage.local.clear()
+        showStatus(`✅ Toutes les sauvegardes ont été supprimée`, Status.success);
 
         // Recharger la liste
         selectedBackup = null;
@@ -190,6 +184,9 @@ async function exportBackups(): Promise<void> {
 
 // IMPORT JSON
 async function importBackups(): Promise<void> {
+    const url = browser.runtime.getURL('html/options.html'); // adapte le chemin
+    await browserAPIpopup.tabs.create({url});
+
     showStatus("not implemented", Status.error);
     return
 
