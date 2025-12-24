@@ -17,20 +17,21 @@
     }
   },
 
-  "permissions": [
-    "tabs"
-  ],
-
-  "host_permissions": [
-    "*://*.anime-sama.si/*"
-  ],
-
   "content_scripts": [
     {
-      "matches": ["*://*.anime-sama.si/*"],
+      "matches": ["<all_urls>"],
       "js": ["dist/content.js"],
       "run_at": "document_end"
     }
+  ],
+
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+
+  "host_permissions": [
+    "<all_urls>"
   ],
 
 
@@ -44,9 +45,9 @@
     {
       "resources": [
         "common/html/popup-sync.html",
-        "common/css/style-popup.css"
+        "common/css/popup-sync.css"
       ],
-      "matches": ["*://*.anime-sama.si/*"]
+      "matches": ["<all_urls>"]
     }
   ],
 
