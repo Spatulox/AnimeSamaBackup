@@ -1,0 +1,56 @@
+{
+  "manifest_version": 3,
+  "name": "Anime-sama Sync",
+  "description": "Synchronise les données locales entre anime-sama.eu, .si, .fr, etc.",
+  "version": "1.0.0",
+
+  "icons": {
+    "16": "common/icons/icon16.png",
+    "48": "common/icons/icon48.png",
+    "128": "common/icons/icon128.png"
+  },
+
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "MuteAds@MuteAds",
+      "strict_min_version": "109.0"
+    }
+  },
+
+  "permissions": [
+    "tabs"
+  ],
+
+  "host_permissions": [
+    "*://*.anime-sama.si/*"
+  ],
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.anime-sama.si/*"],
+      "js": ["dist/content.js"],
+      "run_at": "document_end"
+    }
+  ],
+
+
+  "action": {
+    "default_icon": "./icons/icon16.png",
+    "default_title": "Anime-sama Sync",
+    "default_popup": "common/html/popup.html"
+  },
+
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "common/html/popup-sync.html",
+        "common/css/style-popup.css"
+      ],
+      "matches": ["*://*.anime-sama.si/*"]
+    }
+  ],
+
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'"
+  }
+}
