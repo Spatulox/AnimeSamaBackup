@@ -45,9 +45,17 @@
     {
       "resources": [
         "common/html/popup-sync.html",
-        "common/css/popup-sync.css"
+        "common/css/popup-sync.css",
+        "common/css/option.css"
       ],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+
+  "options_ui": {
+    "page": "common/html/option.html",
+    "browser_style": true,
+    "open_in_tab": true
+  }
+
 }

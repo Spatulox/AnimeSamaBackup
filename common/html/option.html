@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Anime-sama Sync - Options</title>
+    <link rel="stylesheet" href="../css/popup.css">
+</head>
+<body>
+<h2>⚙️ Options - Anime-sama Sync</h2>
+
+<!-- Section Infos -->
+<div class="section">
+    <h3>ℹ️ Informations</h3>
+    <div id="infos-content">
+        <p><strong>Comment utiliser l'extension :</strong></p>
+        <ul>
+            <li>Activez l'extension sur Anime-sama</li>
+            <li>Les données se synchronisent automatiquement</li>
+            <li>Utilisez "Exporter" pour sauvegarder vos données</li>
+            <li>Utilisez "Importer" pour restaurer une sauvegarde</li>
+        </ul>
+
+        <p><strong>Format des sauvegardes :</strong> Fichiers JSON contenant hostname + data + timestamp</p>
+
+        <details>
+            <summary>🔧 Détails techniques</summary>
+            <p>Les données sont stockées via <code>browser.storage.local</code> avec la clé = hostname.</p>
+        </details>
+    </div>
+</div>
+
+<!-- Section Import -->
+<div class="section">
+    <h3>📥 Importer les données</h3>
+    <button id="import-btn" class="up-button">📁 Importer depuis un fichier JSON</button>
+</div>
+
+<!-- Section Sauvegardes (optionnel, pour cohérence) -->
+<div class="section">
+    <h3>📦 Sauvegardes disponibles</h3>
+    <div id="backup-list"></div>
+</div>
+
+<div id="status" class="status"></div>
+<script src="../../dist/common.js"></script>
+<script src="../../dist/option.js"></script>
+
+</body>
+</html>
