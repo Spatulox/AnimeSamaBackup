@@ -1,19 +1,20 @@
 {
   "manifest_version": 3,
-  "name": "Anime-sama Sync",
+  "name": "AnimeSamaBackup - Community",
   "description": "Synchronise les données locales entre anime-sama.eu, .si, .fr, etc.",
-  "version": "1.0.0",
+  "version": "1.1.0",
 
   "icons": {
-    "16": "common/icons/icon16.png",
-    "48": "common/icons/icon48.png",
-    "128": "common/icons/icon128.png"
+    "64": "common/icons/icon64.png"
   },
 
   "browser_specific_settings": {
     "gecko": {
-      "id": "MuteAds@MuteAds",
-      "strict_min_version": "109.0"
+      "id": "AnimeSamaBackupCommunity@AnimeSamaBackupCommunity",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": ["websiteContent"]
+      }
     }
   },
 
@@ -36,8 +37,8 @@
 
 
   "action": {
-    "default_icon": "./icons/icon16.png",
-    "default_title": "Anime-sama Sync",
+    "default_icon": "common/icons/icon64.png",
+    "default_title": "AnimeSamaBackup - Community",
     "default_popup": "common/html/popup.html"
   },
 
@@ -50,12 +51,5 @@
       ],
       "matches": ["<all_urls>"]
     }
-  ],
-
-  "options_ui": {
-    "page": "common/html/option.html",
-    "browser_style": true,
-    "open_in_tab": true
-  }
-
+  ]
 }
