@@ -22,10 +22,10 @@ En cas de bug, ouvrez un [Ticket](https://github.com/Spatulox/AnimeSamaBackup/is
 
     📤 Export/Import JSON complet
 
-    ✅ Compatible Chrome, Firefox, Edge (Manifest V3)
+    ✅ Compatible Chrome, Firefox, Edge (Manifest V3) (Chrome/Edge kinda broken)
 
 📦 Installation
-Chrome/Edge
+Chrome/Edge [Can work, but some functionnalities are broken]
 
     chrome://extensions/ → Mode développeur
 
