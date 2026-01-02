@@ -13,20 +13,17 @@
 <div class="section">
     <h3>ℹ️ Informations</h3>
     <div id="infos-content">
+        <p><strong>Lit les informations des pages des sites anime-sama.* (progrès, épisodes, etc.) pour les stocker uniquement en local dans votre navigateur. Toutes les données collectées restent sur votre ordinateur.</strong></p>
+        <br>
         <p><strong>Comment utiliser l'extension :</strong></p>
         <ul>
             <li>Activez l'extension sur Anime-sama</li>
             <li>Les données se synchronisent automatiquement</li>
-            <li>Utilisez "Exporter" pour sauvegarder vos données</li>
-            <li>Utilisez "Importer" pour restaurer une sauvegarde</li>
+            <li>Utilisez "Exporter" pour sauvegarder vos données dans un fichier</li>
+            <li>Utilisez "Importer" pour restaurer une sauvegarde depuis un fichier</li>
         </ul>
-
+        <br>
         <p><strong>Format des sauvegardes :</strong> Fichiers JSON contenant hostname + data + timestamp</p>
-
-        <details>
-            <summary>🔧 Détails techniques</summary>
-            <p>Les données sont stockées via <code>browser.storage.local</code> avec la clé = hostname.</p>
-        </details>
     </div>
 </div>
 
@@ -34,6 +31,7 @@
 <div class="section">
     <h3>📥 Importer les données</h3>
     <button id="import-btn" class="up-button">📁 Importer depuis un fichier JSON</button>
+    <button id="export-btn" class="up-button">↗️ Exporter dans un fichier JSON</button>
 </div>
 
 <!-- Section Sauvegardes (optionnel, pour cohérence) -->
