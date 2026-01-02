@@ -41,7 +41,7 @@ browserAPIContent.runtime.onMessage.addListener((message, sender, sendResponse) 
 
     if (!window.location.href.match(/^https:\/\/anime-sama.*/)) {
         console.log("no AnimeSama website");
-        //return;
+        return;
     }
 
 

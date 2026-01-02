@@ -3,14 +3,6 @@
 
 let selectedBackup: AnimeBackup | null = null;
 
-async function getCurrentTabName(): Promise<string> {
-    const [tab] = await browserAPI.tabs.query({
-        active: true,
-        currentWindow: true
-    });
-    return tab?.title || 'Onglet inconnu'
-}
-
 
 // Supprimer toutes les sauvegardes
 async function clearAllBackups(): Promise<void> {
@@ -113,6 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     (document.getElementById('force-import-to-website-btn') as HTMLElement)?.addEventListener('click', autoImportToSelectedWebsiteTab);
     (document.getElementById('export-btn') as HTMLElement)?.addEventListener('click', exportBackups);
     (document.getElementById('import-btn') as HTMLElement)?.addEventListener('click', loadOption);
+    (document.getElementById('info-btn') as HTMLElement)?.addEventListener('click', loadOption);
     (document.getElementById('clear-btn') as HTMLElement)?.addEventListener('click', clearAllBackups);
 
     loadBackups();

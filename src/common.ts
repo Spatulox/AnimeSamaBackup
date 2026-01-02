@@ -6,7 +6,6 @@ enum Status {
     info = 'info',
     error = 'error',
 }
-
 function showStatus(message: string, type: Status = Status.info): void {
     const statusEl = document.getElementById('status') as HTMLElement;
     if (!statusEl) return;
@@ -19,6 +18,14 @@ function showStatus(message: string, type: Status = Status.info): void {
             statusEl.style.display = 'none';
         }, 3000);
     }
+}
+
+async function getCurrentTabName(): Promise<string> {
+    const [tab] = await browserAPI.tabs.query({
+        active: true,
+        currentWindow: true
+    });
+    return tab?.title || 'Onglet inconnu'
 }
 
 async function loadBackups(): Promise<void> {

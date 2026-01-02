@@ -61,5 +61,5 @@ function importBackups(): void {
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
     (document.getElementById('import-btn') as HTMLElement)?.addEventListener('click', importBackups);
-    //loadBackups();
+    loadBackups();
 });
