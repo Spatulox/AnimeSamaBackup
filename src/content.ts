@@ -153,11 +153,11 @@ browserAPIContent.runtime.onMessage.addListener((message, sender, sendResponse) 
 
 
             const key = `alreadyAsked_${hostname}`;
-            const result = await browser.storage.local.get(key);
+            const result = await browserAPIContent.storage.local.get(key);
 
             if (result[key] !== true) {
                 await showSyncPopup();
-                await browser.storage.local.set({ [key]: true });
+                await browserAPIContent.storage.local.set({ [key]: true });
             }
 
         }
