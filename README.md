@@ -1,3 +1,6 @@
+# DEPRECATED
+> Since anime-sama has implemented their own backup system, this is now useless
+
 # AnimeSamaBackup WIP
 Synchronise vos données locales (historique, favoris, progression) entre tous les miroirs Anime-Sama (.eu, .si, .fr, etc.)
 Plus besoin de refaire tous vos favoris lors d'un changement de domaine (.org / .eu) !
